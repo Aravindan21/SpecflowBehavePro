@@ -25,6 +25,6 @@ jobs:
           uses: actions/upload-artifact@v3
           with:
             name: dotnet-results-${{ matrix.dotnet-version }}
-            path: ""
+            path: "/home/runner/work/SpecflowBehavePro/SpecflowBehavePro/bin/Debug/net6.0/TestExecution.json"
 
           
