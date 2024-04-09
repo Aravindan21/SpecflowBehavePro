@@ -1,11 +1,6 @@
-
 name: Junit dotnet package
 
-#on: [push]
-  pull_request:
-   # types:
-     # - opened
-     # - synchronize
+on: push
   
 jobs:
   build:
@@ -24,71 +19,12 @@ jobs:
         - name: Install dependencies
           run: dotnet restore
         - name: Test with dotnet test
-          run: dotnet test "SampleProject.csproj" --no-build --verbosity normal --logger:"junit;LogFilePath=test-result.xml"
+          run: dotnet test "SampleProject.csproj" --no-build --verbosity normal
           
         - name: Upload dotnet test results
           uses: actions/upload-artifact@v3
           with:
             name: dotnet-results-${{ matrix.dotnet-version }}
-            path: "test-result.xml"
-          # Use always() to always run this step to publish test results when there are test failures
-            
-        - name: git action adding test report
-          run: |
-               git config --global user.email "${{ secrets.GITHUBEMAIL }}"
-               git config --global user.name "${{ secrets.GITHUBUSERNAME }}"
-               git add .
-               git commit -m "Adding Latest Junit Report file"
-               git config --global pull.ff only 
-               git push origin HEAD:master --force
-
-               
-        - name: Upload Junit results in BrowserStack and print the logs in a file
-          run: |
-                curl -u "${{ secrets.BROWSERSTACKID }}:${{ secrets.BROWSERSTACKPASSWORD }}" -vvv \
-                     -X POST \
-                     -F 'data=@"test-result.xml"' \
-                     -F "projectName=Junit report uploads" \
-                     -F "buildName=Observability Sample" \
-                https://upload-observability.browserstack.com/upload > file.txt
-
-        - name: git action adding test report
-          run: |
-               git config --global user.email "${{ secrets.GITHUBEMAIL }}"
-               git config --global user.name "${{ secrets.GITHUBUSERNAME }}"
-               git add .
-               git commit -m "Adding file.txt"
-               git config --global pull.ff only 
-               git push origin HEAD:master --force
-
-        - name: Storing browserstack test observability link in a variable
-          run: |
-               my_var=$(grep -oP '(?<=seconds).*?(?=})' file.txt)
-               echo "final_browserstack_test_observability_link=$(echo "$my_var" | tr -d '"')" >> $GITHUB_ENV
-        
-        - name: Check Url
-          run: echo $final_browserstack_test_observability_link
-
-        - name: Get Jira issue key
-          id: get-issue-key
-          run: | 
-                echo "issue-key=$(echo ${{ github.event.pull_request.title }} | sed 's/^\\[\\(\\w\\+-\\d+\\)\\].*/\\1/')" >> $GITHUB_OUTPUT
-
-        - name: Check issue key value
-          run: echo ${{ steps.get-issue-key.outputs.issue-key }}
-        
-        - name: Login
-          uses: atlassian/gajira-login@v3
-          env:
-             JIRA_BASE_URL: https://onbe-sandbox-213.atlassian.net
-             JIRA_USER_EMAIL: ${{ secrets.GITHUBEMAIL }}
-             JIRA_API_TOKEN: ${{ secrets.JIRAAPITOKEN }}
-
-          
-        # - name: Jira Add Comment
-        #   uses: atlassian/gajira-comment@v3
-        #   with:
-        #    issue: ${{ steps.get-issue-key.outputs.issue-key }}
-        #    comment: Check Report in the link ${{env.final_browserstack_test_observability_link}}
+            path: ""
 
           
