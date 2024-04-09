@@ -20,11 +20,30 @@ jobs:
           run: dotnet restore
         - name: Test with dotnet test
           run: dotnet test "SampleProject.csproj" --no-build --verbosity normal
-          
+
         - name: Upload dotnet test results
           uses: actions/upload-artifact@v3
           with:
             name: dotnet-results-${{ matrix.dotnet-version }}
             path: "/home/runner/work/SpecflowBehavePro/SpecflowBehavePro/bin/Debug/net6.0/TestExecution.json"
+
+        - name: git action adding test report
+          run: |
+               git config --global user.email "${{ secrets.GITHUBEMAIL }}"
+               git config --global user.name "${{ secrets.GITHUBUSERNAME }}"
+               git add .
+               git commit -m "Adding latest cucumber json"
+               git config --global pull.ff only 
+               git push origin HEAD:main --force  
+          
+          - name: Posting report to jira with BehavePro
+          run: |
+               curl -L -X PUT https://test-reports.behave.pro/REST/1.0/bdd/report \
+               -H "X-API-KEY: "9f7768fe7aec50480c9dfb974bc58fc6793243b3" \
+               -H "X-COMMIT-ID: $GITHUB_SHA" \
+               -H "X-BUILD-ID: $GITHUB_RUN_ID" \
+               -H "X-BUILD-URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+               --data-binary @/home/runner/work/SpecflowBehavePro/SpecflowBehavePro/bin/Debug/net6.0/TestExecution.json
+        
 
           
