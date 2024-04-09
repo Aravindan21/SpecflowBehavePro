@@ -2,7 +2,7 @@ using FluentAssertions;
 using System;
 using TechTalk.SpecFlow;
 
-namespace SampleProject
+namespace SampleProject.Features
 {
     [Binding]
     public class TestUserLoginStepDefinitions
@@ -19,7 +19,7 @@ namespace SampleProject
         [When(@"User clicks on login")]
         public void WhenUserClicksOnLogin()
         {
-            
+
         }
 
         [Then(@"Response should be '([^']*)'")]
@@ -27,7 +27,7 @@ namespace SampleProject
         {
             var result = AuthenticateUsers.AuthenticateUser(_userName, _password);
             result.Should().Be(success);
-            
+
         }
 
         [Then(@"Logged in Successfully")]
