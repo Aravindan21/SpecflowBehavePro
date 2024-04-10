@@ -43,6 +43,7 @@ jobs:
                -H "X-COMMIT-ID: $GITHUB_SHA" \
                -H "X-BUILD-ID: $GITHUB_RUN_ID" \
                -H "X-BUILD-URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+               -H "X-PARAM: Os=Linux" \
                --data-binary @/home/runner/work/SpecflowBehavePro/SpecflowBehavePro/bin/Debug/net6.0/TestExecution.json
         
 
