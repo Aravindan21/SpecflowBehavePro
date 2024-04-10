@@ -41,9 +41,6 @@ jobs:
                curl -L -X PUT https://test-reports.behave.pro/REST/1.0/bdd/report \
                -H "X-API-KEY: "9f7768fe7aec50480c9dfb974bc58fc6793243b3" \
                -H "X-COMMIT-ID: $GITHUB_SHA" \
-               -H "X-BUILD-ID: $GITHUB_RUN_ID" \
-               -H "X-BUILD-URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
-               -H "X-PARAM: Os=Linux" \
                --data-binary @/home/runner/work/SpecflowBehavePro/SpecflowBehavePro/bin/Debug/net6.0/TestExecution.json
         
 
